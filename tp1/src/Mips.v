@@ -1,30 +1,12 @@
 module Mips (
     input clock,
     input reset,
-    //RAM
-    output    [17:0]    addr,
-    inout     [15:0]    data,
-    output              wre,
-    output              oute,
-    output              hb_mask,
-    output              lb_mask,
-    output              chip_en,
 	output [31:0] regout,
-	input [4:0] addrout,
-	output [31:0] memout
+	input [4:0] addrout
 );
 
     reg               clock_div;
 
-    wire              if_mc_en;
-    wire    [17:0]    if_mc_addr;
-    wire    [31:0]    mc_if_data;
-    wire              mem_mc_rw;
-    wire              mem_mc_en;
-    wire    [17:0]    mem_mc_addr;
-    wire    [31:0]    mem_mc_data;
-    wire    [17:0]    mc_ram_addr;
-    wire              mc_ram_wre;
     wire              ex_if_stall;
     wire    [31:0]    if_id_nextpc;
     wire    [31:0]    if_id_instruc;
@@ -68,14 +50,6 @@ module Mips (
     wire    [4:0]     wb_reg_addr;
     wire    [31:0]    wb_reg_data;
 
-    assign addr = mc_ram_addr;
-    assign wre = mc_ram_wre;
-    assign oute = 1'b0;
-    assign hb_mask = 1'b0;
-    assign lb_mask = 1'b0;
-    assign chip_en = 1'b0;
-	assign memout = mc_if_data;
-
     always @(posedge clock or negedge reset) begin
         if (~reset) begin
             clock_div <= 1'b0;
@@ -84,21 +58,14 @@ module Mips (
         end
     end
 
-    MemControler MEMCONTROLLER(.clock(clock),.reset(reset),.if_mc_en(if_mc_en),.if_mc_addr(if_mc_addr),
-                               .mc_if_data(mc_if_data),.mem_mc_rw(mem_mc_rw),.mem_mc_en(mem_mc_en),
-                               .mem_mc_addr(mem_mc_addr),.mem_mc_data(mem_mc_data),.mc_ram_addr(mc_ram_addr),
-                               .mc_ram_wre(mc_ram_wre),.mc_ram_data(data));
-
     Fetch FETCH(.clock(clock_div),.reset(reset),.ex_if_stall(ex_if_stall),.if_id_nextpc(if_id_nextpc),
                 .if_id_instruc(if_id_instruc),.id_if_selpcsource(id_if_selpcsource),.id_if_rega(id_if_rega),
-                .id_if_pcimd2ext(id_if_pcimd2ext),.id_if_pcindex(id_if_pcindex),.id_if_selpctype(id_if_selpctype),
-                .if_mc_en(if_mc_en),.if_mc_addr(if_mc_addr),.mc_if_data(mc_if_data));
+                .id_if_pcimd2ext(id_if_pcimd2ext),.id_if_pcindex(id_if_pcindex),.id_if_selpctype(id_if_selpctype));
 
     Memory MEMORY(.clock(clock_div),.reset(reset),.ex_mem_readmem(ex_mem_readmem),.ex_mem_writemem(ex_mem_writemem),
                   .ex_mem_regb(ex_mem_regb),.ex_mem_selwsource(ex_mem_selwsource),.ex_mem_regdest(ex_mem_regdest),
-                  .ex_mem_writereg(ex_mem_writereg),.ex_mem_wbvalue(ex_mem_wbvalue),.mem_mc_rw(mem_mc_rw),
-                  .mem_mc_en(mem_mc_en),.mem_mc_addr(mem_mc_addr),.mem_mc_data(mem_mc_data),
-                  .mem_wb_regdest(mem_wb_regdest),.mem_wb_writereg(mem_wb_writereg),.mem_wb_wbvalue(mem_wb_wbvalue));
+                  .ex_mem_writereg(ex_mem_writereg),.ex_mem_wbvalue(ex_mem_wbvalue),.mem_wb_regdest(mem_wb_regdest),
+				  .mem_wb_writereg(mem_wb_writereg),.mem_wb_wbvalue(mem_wb_wbvalue));
 
     Execute EXECUTE(.clock(clock_div),.reset(reset),.id_ex_selalushift(id_ex_selalushift),.id_ex_selimregb(id_ex_selimregb),
                     .id_ex_aluop(id_ex_aluop),.id_ex_unsig(id_ex_unsig),.id_ex_shiftop(id_ex_shiftop),
