@@ -5,13 +5,12 @@ module Ram (
 );
 
     reg     [31:0]    memory    [0:127];
-    
-	assign data[31:0] = wre ? memory[addr] : 32'hZZZZ_ZZZZ;
-	
+
+    assign data[31:0] = wre ? memory[addr] : 32'hZZZZ_ZZZZ;
+
     always @(wre or addr or data) begin
-        if (!wre) begin
-			memory[addr] = data[31:0];
-		end
+        if (!wre)
+            memory[addr] = data[31:0];
     end
-    
+
 endmodule

@@ -13,16 +13,16 @@ module Fetch (
     input         [1:0]     id_if_selpctype
 );
 
-	wire [6:0] addr;
-	wire wre;
-	wire [31:0] data;
+    wire [6:0] addr;
+    wire wre;
+    wire [31:0] data;
 
-	Ram RAM(.addr(addr),.data(data),.wre(wre));
+    Ram RAM(.addr(addr),.data(data),.wre(wre));
 
     reg    [31:0]   pc;
 
     assign addr = pc[6:0];
-	assign wre = 1'b1;
+    assign wre = 1'b1; // The fetch state always reads.
 
     always @(posedge clock or negedge reset) begin
         if (~reset) begin

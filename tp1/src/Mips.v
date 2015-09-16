@@ -1,8 +1,9 @@
 module Mips (
     input clock,
     input reset,
-	output [31:0] regout,
-	input [4:0] addrout
+    output [31:0] regout,
+    input [4:0] addrout,
+    output [31:0] memout
 );
 
     reg               clock_div;
@@ -49,6 +50,8 @@ module Mips (
     wire              wb_reg_en;
     wire    [4:0]     wb_reg_addr;
     wire    [31:0]    wb_reg_data;
+
+    assign memout = mc_if_data;
 
     always @(posedge clock or negedge reset) begin
         if (~reset) begin
