@@ -15,7 +15,7 @@
     clock = 0; \
     reset = 0; \
     #1 reset = 1; \
-    $readmemb(name, ram.memory);
+    $readmemb(name, mips.FETCH.RAM.memory);
 
 // Represents the registers.
 `define t0 mips.REGISTERS.registers[8]

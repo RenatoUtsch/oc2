@@ -2,11 +2,8 @@ module Mips (
     input clock,
     input reset,
     output [31:0] regout,
-    input [4:0] addrout,
-    output [31:0] memout
+    input [4:0] addrout
 );
-
-    reg               clock_div;
 
     wire              ex_if_stall;
     wire    [31:0]    if_id_nextpc;
@@ -51,26 +48,16 @@ module Mips (
     wire    [4:0]     wb_reg_addr;
     wire    [31:0]    wb_reg_data;
 
-    assign memout = mc_if_data;
-
-    always @(posedge clock or negedge reset) begin
-        if (~reset) begin
-            clock_div <= 1'b0;
-        end else begin
-            clock_div <= ~clock_div;
-        end
-    end
-
-    Fetch FETCH(.clock(clock_div),.reset(reset),.ex_if_stall(ex_if_stall),.if_id_nextpc(if_id_nextpc),
+    Fetch FETCH(.clock(clock),.reset(reset),.ex_if_stall(ex_if_stall),.if_id_nextpc(if_id_nextpc),
                 .if_id_instruc(if_id_instruc),.id_if_selpcsource(id_if_selpcsource),.id_if_rega(id_if_rega),
                 .id_if_pcimd2ext(id_if_pcimd2ext),.id_if_pcindex(id_if_pcindex),.id_if_selpctype(id_if_selpctype));
 
-    Memory MEMORY(.clock(clock_div),.reset(reset),.ex_mem_readmem(ex_mem_readmem),.ex_mem_writemem(ex_mem_writemem),
+    Memory MEMORY(.clock(clock),.reset(reset),.ex_mem_readmem(ex_mem_readmem),.ex_mem_writemem(ex_mem_writemem),
                   .ex_mem_regb(ex_mem_regb),.ex_mem_selwsource(ex_mem_selwsource),.ex_mem_regdest(ex_mem_regdest),
                   .ex_mem_writereg(ex_mem_writereg),.ex_mem_wbvalue(ex_mem_wbvalue),.mem_wb_regdest(mem_wb_regdest),
 				  .mem_wb_writereg(mem_wb_writereg),.mem_wb_wbvalue(mem_wb_wbvalue));
 
-    Execute EXECUTE(.clock(clock_div),.reset(reset),.id_ex_selalushift(id_ex_selalushift),.id_ex_selimregb(id_ex_selimregb),
+    Execute EXECUTE(.clock(clock),.reset(reset),.id_ex_selalushift(id_ex_selalushift),.id_ex_selimregb(id_ex_selimregb),
                     .id_ex_aluop(id_ex_aluop),.id_ex_unsig(id_ex_unsig),.id_ex_shiftop(id_ex_shiftop),
                     .id_ex_shiftamt(id_ex_shiftamt),.id_ex_rega(id_ex_rega),.id_ex_readmem(id_ex_readmem),
                     .id_ex_writemem(id_ex_writemem),.id_ex_regb(id_ex_regb),.id_ex_imedext(id_ex_imedext),
@@ -79,7 +66,7 @@ module Mips (
                     .ex_mem_writemem(ex_mem_writemem),.ex_mem_regb(ex_mem_regb),.ex_mem_selwsource(ex_mem_selwsource),
                     .ex_mem_regdest(ex_mem_regdest),.ex_mem_writereg(ex_mem_writereg),.ex_mem_wbvalue(ex_mem_wbvalue));
 
-    Decode DECODE(.clock(clock_div),.reset(reset),.if_id_instruc(if_id_instruc),.if_id_nextpc(if_id_nextpc),
+    Decode DECODE(.clock(clock),.reset(reset),.if_id_instruc(if_id_instruc),.if_id_nextpc(if_id_nextpc),
                   .id_if_selpcsource(id_if_selpcsource),.id_if_rega(id_if_rega),.id_if_pcimd2ext(id_if_pcimd2ext),
                   .id_if_pcindex(id_if_pcindex),.id_if_selpctype(id_if_selpctype),.id_ex_selalushift(id_ex_selalushift),
                   .id_ex_selimregb(id_ex_selimregb),.id_ex_aluop(id_ex_aluop),.id_ex_unsig(id_ex_unsig),
@@ -93,7 +80,7 @@ module Mips (
     Writeback WRITEBACK(.mem_wb_regdest(mem_wb_regdest),.mem_wb_writereg(mem_wb_writereg),.mem_wb_wbvalue(mem_wb_wbvalue),
                         .wb_reg_en(wb_reg_en),.wb_reg_addr(wb_reg_addr),.wb_reg_data(wb_reg_data));
 
-    Registers REGISTERS(.clock(clock_div),.reset(reset),.addra(id_reg_addra),.dataa(reg_id_dataa),
+    Registers REGISTERS(.clock(clock),.reset(reset),.addra(id_reg_addra),.dataa(reg_id_dataa),
                         .ass_dataa(reg_id_ass_dataa),.addrb(id_reg_addrb),.datab(reg_id_datab),
                         .ass_datab(reg_id_ass_datab),.enc(wb_reg_en),.addrc(wb_reg_addr),.datac(wb_reg_data),
 						.regout(regout),.addrout(addrout));
