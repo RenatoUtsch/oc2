@@ -13,7 +13,7 @@ module Fetch (
     input         [1:0]     id_if_selpctype
 );
 
-    wire [6:0] addr;
+    wire [8:0] addr;
     wire wre;
     wire [31:0] data;
 
@@ -21,7 +21,7 @@ module Fetch (
 
     reg    [31:0]   pc;
 
-    assign addr = pc[6:0];
+    assign addr = pc[9:0];
     assign wre = 1'b1; // The fetch state always reads.
 
     always @(posedge clock or negedge reset) begin

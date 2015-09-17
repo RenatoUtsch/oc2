@@ -15,14 +15,14 @@ module Memory (
     output reg    [31:0]    mem_wb_wbvalue
 );
 
-    wire [6:0] addr;
+    wire [8:0] addr;
     wire wre;
     wire [31:0] data;
 
     Ram RAM(.addr(addr),.wre(wre),.data(data));
 
     assign wre = ex_mem_readmem & !ex_mem_writemem;
-    assign addr = ex_mem_wbvalue[6:0];
+    assign addr = ex_mem_wbvalue[8:0];
     assign data = wre ? 32'hZZZZ_ZZZZ : ex_mem_regb;
 
     always @(posedge clock or negedge reset) begin
