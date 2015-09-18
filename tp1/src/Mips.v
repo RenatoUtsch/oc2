@@ -83,6 +83,6 @@ module Mips (
     Registers REGISTERS(.clock(clock),.reset(reset),.addra(id_reg_addra),.dataa(reg_id_dataa),
                         .ass_dataa(reg_id_ass_dataa),.addrb(id_reg_addrb),.datab(reg_id_datab),
                         .ass_datab(reg_id_ass_datab),.enc(wb_reg_en),.addrc(wb_reg_addr),.datac(wb_reg_data),
-						.regout(regout),.addrout(addrout));
+								.regout(regout),.addrout(addrout));
 
 endmodule

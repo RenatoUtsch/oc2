@@ -17,7 +17,7 @@ module Fetch (
     wire wre;
     wire [31:0] data;
 
-    Ram RAM(.addr(addr),.data(data),.wre(wre));
+    Ram RAM(.addr(addr),.data(data),.wre(wre),.flag(1'b1));
 
     reg    [31:0]   pc;
 

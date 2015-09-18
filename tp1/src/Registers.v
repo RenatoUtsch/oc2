@@ -24,7 +24,7 @@ module Registers (
 					 registers[11],registers[10],registers[9],registers[8],
 					 registers[7],registers[6],registers[5],registers[4],
 					 registers[3],registers[2],registers[1],registers[0]};*/
-	assign regout = registers[addrout];
+	 assign regout = registers[addrout];
     assign ass_dataa = registers[addra];
     assign ass_datab = registers[addrb];
 

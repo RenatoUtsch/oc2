@@ -19,7 +19,7 @@ module Memory (
     wire wre;
     wire [31:0] data;
 
-    Ram RAM(.addr(addr),.wre(wre),.data(data));
+    Ram RAM(.addr(addr),.wre(wre),.data(data),.flag(1'b0));
 
     assign wre = ex_mem_readmem & !ex_mem_writemem;
     assign addr = ex_mem_wbvalue[8:0];
