@@ -57,8 +57,8 @@ module Decode (
     assign id_ex_regb = reg_id_datab;
     assign id_ex_shiftamt = reg_id_dataa;
     assign id_if_selpctype = selpctype;
-    assign id_if_pcindex = {if_id_nextpc[31:28],if_id_instruc[25:0]<<2'b10};
-    assign id_if_pcimd2ext = if_id_nextpc + $signed({{16{if_id_instruc[15]}},if_id_instruc[15:0]}<<2'b10);
+    assign id_if_pcindex = {if_id_nextpc[31:28],if_id_instruc[25:0]};
+    assign id_if_pcimd2ext = if_id_nextpc + $signed({{16{if_id_instruc[15]}},if_id_instruc[15:0]});
 
     Comparator COMPARATOR(.a(reg_id_ass_dataa),.b(reg_id_ass_datab),.op(compop),.compout(compout));
     Control CONTROL(.op(if_id_instruc[31:26]),.fn(if_id_instruc[5:0]),

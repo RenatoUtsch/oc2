@@ -15,13 +15,13 @@ module Memory (
     output reg    [31:0]    mem_wb_wbvalue
 );
 
-    wire [8:0] addr;
+    wire [6:0] addr;
     wire wre;
     wire [31:0] data;
 
-    Ram RAM(.addr(addr),.wre(wre),.data(data),.flag(1'b0));
+    Ram RAM(.addr(addr),.wre(wre),.data(data),.flag(1'b0),.reset(reset));
 
-    assign wre = ex_mem_readmem & !ex_mem_writemem;
+    assign wre = !ex_mem_writemem;
     assign addr = ex_mem_wbvalue[8:0];
     assign data = wre ? 32'hZZZZ_ZZZZ : ex_mem_regb;
 

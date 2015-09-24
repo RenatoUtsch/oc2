@@ -13,21 +13,22 @@ module Fetch (
     input         [1:0]     id_if_selpctype
 );
 
-    wire [8:0] addr;
+    wire [6:0] addr;
     wire wre;
     wire [31:0] data;
 
-    Ram RAM(.addr(addr),.data(data),.wre(wre),.flag(1'b1));
+    Ram RAM(.addr(addr),.data(data),.wre(wre),.flag(1'b1), .reset(reset));
 
     reg    [31:0]   pc;
 
-    assign addr = pc[9:0];
+    assign addr = pc[6:0];
     assign wre = 1'b1; // The fetch state always reads.
 
     always @(posedge clock or negedge reset) begin
         if (~reset) begin
             if_id_instruc <= 32'h0000_0000;
             pc <= 32'h0000_0000;
+				if_id_nextpc <= 32'h0000_0000;
         end else begin
             if (ex_if_stall) begin
                 if_id_instruc <= 32'h0000_0000;
@@ -51,7 +52,8 @@ module Fetch (
                         //default: pc <= 32'hXXXX_XXXX;
                     endcase
                 end else begin
-                    pc <= pc + 32'h0000_0004;
+						  pc <= pc + 32'h0000_0001;
+						  if_id_nextpc = pc + 1;
                 end
             end
         end
