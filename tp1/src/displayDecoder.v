@@ -15,7 +15,7 @@ module displayDecoder(
 		4'b0110:saida = 7'b0100000; // 6
 		4'b0111:saida = 7'b0001111; // 7
 		4'b1000:saida = 7'b0000001; // 8
-		4'b1001:saida = 7'b1001111; // 9
+		4'b1001:saida = 7'b0001100; // 9
 		4'b1010:saida = 7'b0001000; // A
 		4'b1011:saida = 7'b1100000; // B
 		4'b1100:saida = 7'b1110010; // C

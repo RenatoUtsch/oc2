@@ -2,6 +2,9 @@ module Mips (
     input clock,
     input reset,
     output [31:0] regout,
+	 output [31:0] regout2,
+	output [31:0] regout3,
+	output [31:0] regout4,
     input [4:0] addrout
 );
 

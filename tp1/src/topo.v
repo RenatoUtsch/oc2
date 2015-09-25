@@ -1,8 +1,8 @@
 module topo (
-	  input[17:0]	 SW, // Switches
-      input [3:0]   KEY,
+	 input[17:0]	  SW, // Switches
+    input [3:0]    KEY,
 	 output [0:6]  HEX0,
-     output [0:6]  HEX1,
+    output [0:6]  HEX1,
 	 output [0:6]  HEX2,
 	 output [0:6]  HEX3,
 	 output [0:6]  HEX4,
@@ -12,7 +12,6 @@ module topo (
 );
 
 	 wire		[31:0] regout;
-	 
 	 reg [31:0] saida;   
 	 
 	 displayDecoder DP7_0(.entrada(saida[3:0]),.saida(HEX0));
