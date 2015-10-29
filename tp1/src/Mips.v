@@ -8,7 +8,6 @@ module Mips (
     input [4:0] addrout
 );
 
-    wire              ex_if_stall;
     wire    [31:0]    if_id_nextpc;
     wire    [31:0]    if_id_instruc;
     wire              id_if_selpcsource;
@@ -51,7 +50,7 @@ module Mips (
     wire    [4:0]     wb_reg_addr;
     wire    [31:0]    wb_reg_data;
 
-    Fetch FETCH(.clock(clock),.reset(reset),.ex_if_stall(ex_if_stall),.if_id_nextpc(if_id_nextpc),
+    Fetch FETCH(.clock(clock),.reset(reset),.if_id_nextpc(if_id_nextpc),
                 .if_id_instruc(if_id_instruc),.id_if_selpcsource(id_if_selpcsource),.id_if_rega(id_if_rega),
                 .id_if_pcimd2ext(id_if_pcimd2ext),.id_if_pcindex(id_if_pcindex),.id_if_selpctype(id_if_selpctype));
 
@@ -65,7 +64,7 @@ module Mips (
                     .id_ex_shiftamt(id_ex_shiftamt),.id_ex_rega(id_ex_rega),.id_ex_readmem(id_ex_readmem),
                     .id_ex_writemem(id_ex_writemem),.id_ex_regb(id_ex_regb),.id_ex_imedext(id_ex_imedext),
                     .id_ex_selwsource(id_ex_selwsource),.id_ex_regdest(id_ex_regdest),.id_ex_writereg(id_ex_writereg),
-                    .id_ex_writeov(id_ex_writeov),.ex_if_stall(ex_if_stall),.ex_mem_readmem(ex_mem_readmem),
+                    .id_ex_writeov(id_ex_writeov),.ex_mem_readmem(ex_mem_readmem),
                     .ex_mem_writemem(ex_mem_writemem),.ex_mem_regb(ex_mem_regb),.ex_mem_selwsource(ex_mem_selwsource),
                     .ex_mem_regdest(ex_mem_regdest),.ex_mem_writereg(ex_mem_writereg),.ex_mem_wbvalue(ex_mem_wbvalue));
 

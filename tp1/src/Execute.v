@@ -17,8 +17,6 @@ module Execute (
     input         [4:0]     id_ex_regdest,
     input                   id_ex_writereg,
     input                   id_ex_writeov,
-    //Fetch
-    output reg              ex_if_stall,
     //Memory
     output reg              ex_mem_readmem,
     output reg              ex_mem_writemem,
@@ -41,7 +39,6 @@ module Execute (
     
     always @(posedge clock or negedge reset) begin
         if (~reset) begin
-            ex_if_stall <= 1'b0;
             ex_mem_readmem <= 1'b0;
             ex_mem_writemem <= 1'b0;
             ex_mem_regb <= 32'h0000_0000;
@@ -50,7 +47,6 @@ module Execute (
             ex_mem_writereg <= 1'b0;
             ex_mem_wbvalue <= 32'h0000_0000;
         end else begin
-            ex_if_stall <= id_ex_readmem | id_ex_writemem;
             ex_mem_readmem <= id_ex_readmem;
             ex_mem_writemem <= id_ex_writemem;
             ex_mem_regb <= id_ex_regb;
