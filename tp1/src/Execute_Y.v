@@ -6,7 +6,6 @@ module Execute_Y (
     input       [31:0]  is_y_regb,
     input       [4:0]   is_y_regdest,
     input               is_y_writereg,
-    input               is_y_writeov,
     // Writeback
     output      [4:0]   y_wb_regdest,
     output              y_wb_writereg,
@@ -46,6 +45,10 @@ endmodule
 
 module Execute_Y3 (
 
+    // Output
+    output      [4:0]   y3_y_regdest,
+    output              y3_y_writereg,
+    output      [31:0]  y3_y_wbvalue
 );
 
 
