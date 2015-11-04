@@ -12,27 +12,45 @@ module Execute_Y (
     output      [31:0]  y_wb_wbvalue
 );
 
+    wire            stall;
     wire            y0_y1_stall;
     wire            y0_y1_positive;
     wire            y0_y1_zero;
     wire    [31:0]  y0_y1_rega;
     wire    [31:0]  y0_y1_regb;
     wire    [4:0]   y0_y1_regdest;
-
-    reg stall;
+    wire            y1_y2_stall,
+    wire    [31:0]  y1_y2_rega,
+    wire    [31:0]  y1_y2_regb,
+    wire    [4:0]   y1_y2_regdest,
+    wire            y2_y3_stall,
+    wire    [63:0]  y2_y3_result,
+    wire    [4:0]   y2_y3_regdest,
 
     assign stall = (is_x_functionalunit == 3) ? 0 : 1;
 
-    Execute_Y0 e_Y0(.clock(clock),.reset(mux_reset),.y_y0_stall(stall),
+    Execute_Y0 e_Y0(.clock(clock),.reset(reset),.y_y0_stall(stall),
         .y_y0_rega(is_y_rega),.y_y0_regb(is_y_regb),.y_y0_regdest(is_y_regdest),
         .y0_y1_stall(y0_y1_stall),.y0_y1_positive(y0_y1_positive),
         .y0_y1_zero(y0_y1_zero),.y0_y1_rega(y0_y1_rega),.y0_y1_regb(y0_y1_regb),
         .y0_y1_regdest(y0_y1_regdest));
 
-    Execute_Y1 e_Y1();
-    Execute_Y2 e_Y2();
-    Execute_Y3 e_Y3(.y3_y_regdest(y_wb_regdest),.y3_y_writereg(y_wb_writereg),
-    .y3_y_wbvalue(y_wb_wbvalue)));
+    Execute_Y1 e_Y1(.clock(clock),.reset(reset),.y0_y1_stall(y0_y1_stall),
+        .y0_y1_positive(y0_y1_positive),.y0_y1_zero(y0_y1_zero),
+        .y0_y1_rega(y0_y1_rega),.y0_y1_regb(y0_y1_regb),
+        .y0_y1_regdest(y0_y1_regdest),.y1_y2_stall(y1_y2_stall),
+        .y1_y2_rega(y1_y2_rega),.y1_y2_regb(y1_y2_regb),
+        .y1_y2_regdest(y1_y2_regdest));
+
+    Execute_Y2 e_Y2(.clock(clock),.reset(reset),.y1_y2_stall(y1_y2_stall),
+        .y1_y2_rega(y1_y2_rega),.y1_y2_regb(y1_y2_regb),
+        .y1_y2_regdest(y1_y2_regdest),.y2_y3_stall(y2_y3_stall),
+        .y2_y3_result(y2_y3_result),.y2_y3_regdest(y2_y3_regdest)));
+
+    Execute_Y3 e_Y3(.clock(clock),.reset(reset),.y2_y3_stall(y2_y3_stall),
+        .y2_y3_result(y2_y3_result),.y2_y3_regdest(y2_y3_regdest),
+        .y3_y_regdest(y_wb_regdest),.y3_y_writereg(y_wb_writereg),
+        .y3_y_wbvalue(y_wb_wbvalue)));
 
 endmodule
 

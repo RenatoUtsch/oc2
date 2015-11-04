@@ -21,6 +21,7 @@ module Execute_X (
     output      [31:0]  x_wb_wbvalue
 );
 
+    wire            stall;
     wire            x0_x1_stall;
     wire    [4:0]   x0_x1_regdest;
     wire            x0_x1_writereg;
@@ -33,8 +34,6 @@ module Execute_X (
     wire    [4:0]   x2_x3_regdest;
     wire            x2_x3_writereg;
     wire    [31:0]  x2_x3_wbvalue;
-
-    reg stall;
 
     assign stall = (is_x_functionalunit == 1) ? 0 : 1;
 
