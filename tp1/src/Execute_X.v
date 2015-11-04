@@ -10,6 +10,7 @@ module Execute_X (
     input       [4:0]   is_x_shiftamt,
     input       [31:0]  is_x_rega,
     input       [31:0]  is_x_regb,
+    input       [31:0]  is_x_imedext,
     input       [4:0]   is_x_regdest,
     input               is_x_writereg,
     input               is_x_writeov,
@@ -32,9 +33,10 @@ module Execute_X (
     Execute_X0 e_X0(.clock(clock),.reset(reset),.x_x0_selalushift(is_x_selalushift),
         .x_x0_selimregb(is_x_selimregb),.x_x0_aluop(is_x_aluop),.x_x0_unsig(is_x_unsig),
         .x_x0_shiftop(is_x_shiftop),.x_x0_shiftamt(is_x_shiftamt),.x_x0_rega(is_x_rega),
-        .x_x0_regb(is_x_regb),.x_x0_regdest(is_x_regdest),.x_x0_writereg(is_x_writereg),
-        .x_x0_writeov(is_x_writeov),.x0_x1_regdest(x0_x1_regdest)
-        .x0_x1_writereg(x0_x1_writereg),.x0_x1_wbvalue(x0_x1_wbvalue));
+        .x_x0_regb(is_x_regb),.x_x0_imedext(is_x_imedext),.x_x0_regdest(is_x_regdest),
+        .x_x0_writereg(is_x_writereg),.x_x0_writeov(is_x_writeov),
+        .x0_x1_regdest(x0_x1_regdest),.x0_x1_writereg(x0_x1_writereg),
+        .x0_x1_wbvalue(x0_x1_wbvalue));
 
     Execute_S e_X1(.clock(clock),.reset(reset),.in_regdest(x0_x1_regdest),
         .in_writereg(x0_x1_writereg),.in_wbvalue(x0_x1_wbvalue),
@@ -64,6 +66,7 @@ module Execute_X0 (
     input       [4:0]   x_x0_shiftamt,
     input       [31:0]  x_x0_rega,
     input       [31:0]  x_x0_regb,
+    input       [31:0]  x_x0_imedext,
     input       [4:0]   x_x0_regdest,
     input               x_x0_writereg,
     input               x_x0_writeov,
