@@ -36,7 +36,7 @@ module Execute_X (
 
     reg stall;
 
-    assign stall = (is_x_functionalunit == 1) ? 1 : 0;
+    assign stall = (is_x_functionalunit == 1) ? 0 : 1;
 
     Execute_X0 e_X0(.clock(clock),.reset(reset),.x_x0_stall(stall),
         .x_x0_selalushift(is_x_selalushift),

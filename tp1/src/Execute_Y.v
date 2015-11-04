@@ -21,7 +21,7 @@ module Execute_Y (
 
     reg stall;
 
-    assign stall = (is_x_functionalunit == 3) ? 1 : 0;
+    assign stall = (is_x_functionalunit == 3) ? 0 : 1;
 
     Execute_Y0 e_Y0(.clock(clock),.reset(mux_reset),.y_y0_stall(stall),
         .y_y0_rega(is_y_rega),.y_y0_regb(is_y_regb),.y_y0_regdest(is_y_regdest),
