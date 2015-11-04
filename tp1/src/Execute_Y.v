@@ -5,7 +5,6 @@ module Execute_Y (
     input       [31:0]  is_y_rega,
     input       [31:0]  is_y_regb,
     input       [4:0]   is_y_regdest,
-    input               is_y_writereg,
     // Writeback
     output      [4:0]   y_wb_regdest,
     output              y_wb_writereg,
