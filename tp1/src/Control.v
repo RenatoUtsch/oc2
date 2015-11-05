@@ -15,7 +15,7 @@ module Control (
     output    [1:0]    selpctype,
     output    [2:0]    compop,
     output             unsig,
-	 output	  [1:0]	  numop//número de operandos
+    output	  [1:0]	  numop//número de operandos
 );
 
     wire    [12:0]    sel;
@@ -23,7 +23,7 @@ module Control (
 
     assign sel = {op,fn};
 
-	 assign numop = out[22:21];
+    assign numop = out[22:21];
     assign selimregb = out[20];
     assign selbrjumpz = out[19:18];
     assign selregdest = out[17];
@@ -40,7 +40,7 @@ module Control (
     assign writemem = out[0];
 
     always @(*) begin
-        casex (sel) 
+        casex (sel)
             12'b000000000100: out <= 23'b100001011X10XXX1XXXXX00;
             12'b000000000110: out <= 23'b100001011X00XXX1XXXXX00;
             12'b000000000111: out <= 23'b100001011X01XXX1XXXXX00;
@@ -63,7 +63,7 @@ module Control (
             12'b001100XXXXXX: out <= 23'b011000011XXX0000XXXXX00;
             12'b001101XXXXXX: out <= 23'b011000011XXX0010XXXXX00;
             12'b001110XXXXXX: out <= 23'b011000011XXX1010XXXXX00;
-				12'b000000011000: out <= 23'b1000010100XX1110XXXXX00;		// nova instrução
+            12'b000000011000: out <= 23'b1000010100XX1110XXXXX00;		// nova instrução
             12'b100011XXXXXX: out <= 23'b0110001110XX0100XXXXX10;
             12'b101011XXXXXX: out <= 23'b01100XX0X0XX0100XXXXX01;
             default:          out <= 23'b00000000000000000000000;
