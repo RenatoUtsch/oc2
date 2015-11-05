@@ -11,7 +11,7 @@ module Decode (
     output        [31:0]    id_if_pcimd2ext,
     output        [31:0]    id_if_pcindex,
     output        [1:0]     id_if_selpctype,
-    //Execute
+    //Issue
     output reg              id_is_selalushift,
     output reg              id_is_selimregb,
     output reg    [2:0]     id_is_aluop,
@@ -27,7 +27,9 @@ module Decode (
     output reg    [4:0]     id_is_regdest,
     output reg              id_is_writereg,
     output reg              id_is_writeov,
-	 output        [1:0]     id_is_numop,
+	 output reg       [1:0]  id_is_numop,
+	 output reg		   [31:0] id_is_addra,
+	 output reg		   [31:0] id_is_addrb,
     //Registers
     output        [4:0]     id_reg_addra,
     output        [4:0]     id_reg_addrb,
@@ -54,13 +56,6 @@ module Decode (
     wire    [2:0]    compop;
 	 wire    [1:0]    numop;
 
-	 assign id_is_numop = numop;
-    assign id_if_rega = reg_id_ass_dataa;
-    assign id_reg_addra = if_id_instruc[25:21];
-    assign id_reg_addrb = if_id_instruc[20:16];
-    assign id_is_rega = reg_id_dataa;
-    assign id_is_regb = reg_id_datab;
-    assign id_is_shiftamt = reg_id_dataa;
     assign id_if_selpctype = selpctype;
     assign id_if_pcindex = {if_id_nextpc[31:28],if_id_instruc[25:0]};
     assign id_if_pcimd2ext = if_id_nextpc + $signed({{16{if_id_instruc[15]}},if_id_instruc[15:0]});
@@ -110,6 +105,9 @@ module Decode (
                id_is_writereg <= writereg;
                id_is_writeov <= writeov;
                id_is_imedext <= $signed(if_id_instruc[15:0]);
+					id_is_addra <= if_id_instruc[25:21];
+					id_is_addrb <= if_id_instruc[20:16];
+					id_is_numop <= numop;
             end
 	 end 
 

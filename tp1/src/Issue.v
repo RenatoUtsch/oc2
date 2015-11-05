@@ -8,10 +8,8 @@ module Issue(
     input                   id_is_unsig,
     input         [1:0]     id_is_shiftop,
     input         [4:0]     id_is_shiftamt,
-    input         [31:0]    id_is_rega,
     input                   id_is_readmem,
     input                   id_is_writemem,
-    input         [31:0]    id_is_regb,
     input         [31:0]    id_is_imedext,
     input                   id_is_selwsource,
     input         [4:0]     id_is_regdest,
@@ -19,7 +17,7 @@ module Issue(
     input                   id_is_writeov,
 	 input         [4:0]     id_is_addra,
 	 input         [4:0]     id_is_addrb,
-	 //numero de operandos de cada instrucao
+	 //Numero de operandos de cada instrucao
 	 input         [1:0]     id_is_numop,
 	
 	 input 						 execute_stall,
@@ -41,23 +39,37 @@ module Issue(
     output         [4:0]     is_ex_regdest,
     output                   is_ex_writereg,
     output                   is_ex_writeov,
-	 output	 reg	 [1:0]	  is_ex_unidadefuncional
+	 output	 reg	 [1:0]	  is_ex_unidadefuncional,
+	 //Registers
+    output        [4:0]     is_reg_addra,
+    output        [4:0]     is_reg_addrb,
+    input         [31:0]    reg_is_dataa,
+    input         [31:0]    reg_is_datab,
+    input         [31:0]    reg_is_ass_dataa,
+    input         [31:0]    reg_is_ass_datab
 	 );
 	 wire [31:0] pnd_sgn;
 	 reg wre;
-	 Scoreboard SCOREBOARD(.clock(clock),.reset(reset),.reg_addr(id_is_regdest),
-		.func_uni(is_ex_unidadefuncional),.wre(wre),.pnd_sgn(pnd_sgn));
 	 
-	 //assign is_if_stall = 1'b0;
+	 
+    assign id_if_rega = reg_is_ass_dataa;
+    assign is_reg_addra = id_is_addra;
+    assign is_reg_addrb = id_is_addrb;
+    assign is_ex_rega = reg_is_dataa;
+    assign is_ex_regb = reg_is_datab;
+	 
+	 Scoreboard SCOREBOARD(.clock(clock),.reset(reset),.reg_addr(id_is_regdest),
+									.func_uni(is_ex_unidadefuncional),.wre(wre),.pnd_sgn(pnd_sgn));
+	 
 	 assign is_ex_selalushift = (is_if_stall) ? 1'b0 : id_is_selalushift;
 	 assign is_ex_selimregb = (is_if_stall) ? 1'b0 : id_is_selimregb;
 	 assign is_ex_aluop = (is_if_stall) ? 3'b000 : id_is_aluop;
 	 assign is_ex_unsig = (is_if_stall) ? 1'b0 : id_is_unsig;
 	 assign is_ex_shiftop = (is_if_stall) ? 2'b00 : id_is_shiftop;
-	 assign is_ex_shiftamt = id_is_shiftamt; //nao estamos zerando
-	 assign is_ex_rega = id_is_rega;
+	 assign is_ex_shiftamt = id_is_shiftamt; 
 	 assign is_ex_writemem = (is_if_stall) ? 1'b0 : id_is_writemem;
-	 assign is_ex_regb = id_is_regb;
+	 assign is_ex_readmem = (is_if_stall) ? 1'b0 : id_is_readmem;
+	 assign is_ex_writereg = (is_if_stall) ? 1'b0: id_is_writereg;
 	 assign is_ex_imedext = id_is_imedext;
 	 assign is_ex_selwsource = (is_if_stall) ? 1'b0 : id_is_selwsource;
 	 assign is_ex_regdest = (is_if_stall) ? 5'b00000 : id_is_regdest;
@@ -68,14 +80,11 @@ module Issue(
 			is_if_stall = 1'b0;
 			wre =  1'b1;
 		end
-		else begin
-			
-			wre = (is_if_stall) || !(id_is_numop);
-			
+		else begin				
 			if(((id_is_numop == 1) && pnd_sgn[id_is_addra]) ||
-			   ((id_is_numop == 2) && (pnd_sgn[id_is_addra] || pnd_sgn[id_is_addrb]) ))begin
+			   ((id_is_numop == 2) && (pnd_sgn[id_is_addra] || pnd_sgn[id_is_addrb])))begin
 				is_if_stall = 1'b1;
-				is_ex_unidadefuncional = 1'b0;
+				is_ex_unidadefuncional = 2'b00;
 			end
 			else begin
 				if(id_is_readmem || id_is_writemem)
@@ -86,6 +95,8 @@ module Issue(
 					is_ex_unidadefuncional = 2'b01;
 				is_if_stall = 1'b0;
 			end
+			
+			wre = (is_if_stall) || !(id_is_numop);
 		end
 	 end
 	 

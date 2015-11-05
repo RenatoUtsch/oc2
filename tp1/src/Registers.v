@@ -33,7 +33,7 @@ module Registers (
     generate
         always @(posedge clock or negedge reset) begin
             if (~reset) begin
-                for (i=0; i<32; i=i+1) begin: Reg
+                for (i = 6'b000000; i < 32; i = i + 6'b000001) begin: Reg
                     registers[i] <= 32'h0000_0000;
                 end
             end else begin

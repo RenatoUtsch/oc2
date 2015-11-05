@@ -35,7 +35,7 @@ module Execute_X (
     wire            x2_x3_writereg;
     wire    [31:0]  x2_x3_wbvalue;
 
-    assign stall = (is_x_functionalunit == 1) ? 0 : 1;
+    assign stall = (is_x_functionalunit == 1) ? 1'b0 : 1'b1;
 
     Execute_X0 e_X0(.clock(clock),.reset(reset),.x_x0_stall(stall),
         .x_x0_selalushift(is_x_selalushift),

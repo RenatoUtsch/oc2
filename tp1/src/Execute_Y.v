@@ -31,7 +31,7 @@ module Execute_Y (
     wire    [63:0]  y2_y3_result;
     wire    [4:0]   y2_y3_regdest;
 
-    assign stall = (is_y_functionalunit == 3) ? 0 : 1;
+    assign stall = (is_y_functionalunit == 3) ? 1'b0 : 1'b1;
 
     Execute_Y0 e_Y0(.clock(clock),.reset(reset),.y_y0_stall(stall),
         .y_y0_rega(is_y_rega),.y_y0_regb(is_y_regb),.y_y0_regdest(is_y_regdest),
@@ -55,7 +55,7 @@ module Execute_Y (
         .y2_y3_result(y2_y3_result),.y2_y3_regdest(y2_y3_regdest));
 
     Execute_Y3 e_Y3(.clock(clock),.reset(reset),.y2_y3_stall(y2_y3_stall),
-        .y2_y3_positive(y2_y3_positive),.y2_y3_zero(y2_y3_zer0),
+        .y2_y3_positive(y2_y3_positive),.y2_y3_zero(y2_y3_zero),
         .y2_y3_result(y2_y3_result),.y2_y3_regdest(y2_y3_regdest),
         .y3_y_regdest(y_wb_regdest),.y3_y_writereg(y_wb_writereg),
         .y3_y_wbvalue(y_wb_wbvalue));
@@ -102,7 +102,7 @@ module Execute_Y0 (
             else
                 y0_y1_positive <= 0;
 
-            y0_y1_zero <= (y_y0_rega == 0 || y_y0_regb == 0) ? 1 : 0;
+            y0_y1_zero <= (y_y0_rega == 0 || y_y0_regb == 0) ? 1'b1 : 1'b0;
             y0_y1_rega <= y_y0_rega;
             y0_y1_regb <= y_y0_regb;
             y0_y1_regdest <= y_y0_regdest;
@@ -230,7 +230,7 @@ module Execute_Y3 (
             y3_y_wbvalue <= 32'h0000_0000;	  
 		  end else begin
             y3_y_regdest <= y2_y3_regdest;
-            y3_y_writereg <= (y2_y3_result[63:32] != 32'h0000_0000) ? 0 : 1; // Overflow.
+            y3_y_writereg <= (y2_y3_result[63:32] != 32'h0000_0000) ? 1'b0 : 1'b1; // Overflow.
             y3_y_wbvalue <= y2_y3_positive ? y2_y3_result[31:0] : ~y2_y3_result[31:0] + 1;
         end
     end
