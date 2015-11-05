@@ -104,12 +104,17 @@ module Execute_X0 (
         .result(result));
 
     always @(posedge clock or negedge reset) begin
-        if (~reset|x_x0_stall) begin
+        if(!reset) begin
             x0_x1_regdest <= 5'b00000;
             x0_x1_writereg <= 1'b0;
             x0_x1_wbvalue <= 32'h0000_0000;
             x0_x1_stall <= x_x0_stall;
-        end else begin
+        end else if(x_x0_stall)begin
+				x0_x1_regdest <= 5'b00000;
+            x0_x1_writereg <= 1'b0;
+            x0_x1_wbvalue <= 32'h0000_0000;
+            x0_x1_stall <= x_x0_stall;		  
+		  end else begin
             x0_x1_regdest <= x_x0_regdest;
             x0_x1_writereg <= (!aluov | x_x0_writeov) & x_x0_writereg;
             x0_x1_wbvalue <= (x_x0_selalushift) ? result : aluout;

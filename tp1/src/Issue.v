@@ -25,6 +25,7 @@ module Issue(
 	 input 						 execute_stall,
     //Fetch
     output reg   	           is_if_stall,
+	 //Execute
 	 output                   is_ex_selalushift,
     output                   is_ex_selimregb,
     output         [2:0]     is_ex_aluop,
