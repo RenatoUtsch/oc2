@@ -133,7 +133,15 @@ module Execute_M0 (	//Execute.v  modificado
     //Shifter SHIFTER(.in(id_ex_regb),.shiftop(id_ex_shiftop),.shiftamt(id_ex_shiftamt),.result(result));
     
     always @(posedge clock or negedge reset) begin
-        if (~reset|is_m0_stall) begin
+        if (~reset) begin
+            m0_m1_readmem <= 1'b0;
+            m0_m1_writemem <= 1'b0;
+            m0_m1_regb <= 32'h0000_0000;
+            m0_m1_selwsource <= 1'b0;
+            m0_m1_regdest <= 5'b00000;
+            m0_m1_writereg <= 1'b0;
+            m0_m1_wbvalue <= 32'h0000_0000;
+        end else if (is_m0_stall) begin
             m0_m1_readmem <= 1'b0;
             m0_m1_writemem <= 1'b0;
             m0_m1_regb <= 32'h0000_0000;
@@ -183,7 +191,11 @@ module Execute_M1 (	//Memory.v
     assign data = wre ? 32'hZZZZ_ZZZZ : m0_m1_mem_regb;
 
     always @(posedge clock or negedge reset) begin
-        if (~reset|m0_m1_stall) begin
+        if (~reset) begin
+            m1_m2_regdest <= 5'b00000;
+            m1_m2_writereg <= 1'b0;
+            m1_m2_wbvalue <= 32'h0000_0000;
+        end else if (m0_m1_stall) begin
             m1_m2_regdest <= 5'b00000;
             m1_m2_writereg <= 1'b0;
             m1_m2_wbvalue <= 32'h0000_0000;
