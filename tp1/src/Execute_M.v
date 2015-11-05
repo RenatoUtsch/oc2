@@ -20,9 +20,9 @@ module Execute_M (
     input                   is_m0_writereg,
     //input                   is_m0_writeov,	//precisa?
     // Writeback
-    output reg    [4:0]     m_wb_regdest,
-    output reg              m_wb_writereg,
-    output reg    [31:0]    m_wb_wbvalue
+    output     [4:0]     m_wb_regdest,
+    output               m_wb_writereg,
+    output     [31:0]    m_wb_wbvalue
 );
 
 	 wire					 m0_m1_stall;
@@ -73,8 +73,8 @@ Execute_M1 e_M1(.clock(clock),.reset(reset),.m0_m1_stall(m0_m1_stall),
 .m0_m1_mem_writemem(m0_m1_writemem),.m0_m1_mem_regb(m0_m1_regb),
 .m0_m1_mem_selwsource(m0_m1_selwsource),.m0_m1_mem_regdest(m0_m1_regdest),
 .m0_m1_mem_writereg(m0_m1_writereg),.m0_m1_mem_wbvalue(m0_m1_wbvalue),
-.mem_wb_regdest(m1_m2_regdest),.mem_wb_writereg(m1_m2_writereg),
-.mem_wb_wbvalue(m1_m2_wbvalue));
+.m1_m2_regdest(m1_m2_regdest),.m1_m2_writereg(m1_m2_writereg),
+.m1_m2_wbvalue(m1_m2_wbvalue));
 
 Execute_S e_M2(.clock(clock),.reset(reset),.in_regdest(m1_m2_regdest),
 .in_stall(m1_m2_stall),
@@ -82,7 +82,7 @@ Execute_S e_M2(.clock(clock),.reset(reset),.in_regdest(m1_m2_regdest),
         .out_regdest(m2_m3_regdest),.out_writereg(m2_m3_writereg),
         .out_wbvalue(m2_m3_wbvalue));
 		  
-Exceute_S e_M3(.clock(clock),.reset(reset),.in_regdest(m2_m3_regdest),
+Execute_S e_M3(.clock(clock),.reset(reset),.in_regdest(m2_m3_regdest),
 .in_stall(m2_m3_stall),
         .in_writereg(m2_m3_writereg),.in_wbvalue(m2_m3_wbvalue),
         .out_regdest(m_wb_regdest),.out_writereg(m_wb_writereg),
