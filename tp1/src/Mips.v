@@ -3,11 +3,14 @@ module Mips (
     input reset,
     output [31:0] regout,
 	 output [31:0] regout2,
-	output [31:0] regout3,
-	output [31:0] regout4,
+	 output [31:0] regout3,
+	 output [31:0] regout4,
     input [4:0] addrout
 );
-
+	 // fio inútil
+	 wire ex_if_stall;
+	
+    wire              is_if_stall;
     wire    [31:0]    if_id_nextpc;
     wire    [31:0]    if_id_instruc;
     wire              id_if_selpcsource;
@@ -25,21 +28,23 @@ module Mips (
     wire    [4:0]     mem_wb_regdest;
     wire              mem_wb_writereg;
     wire    [31:0]    mem_wb_wbvalue;
-    wire              id_ex_selalushift;
-    wire              id_ex_selimregb;
-    wire    [2:0]     id_ex_aluop;
-    wire              id_ex_unsig;
-    wire    [1:0]     id_ex_shiftop;
-    wire    [4:0]     id_ex_shiftamt;
-    wire    [31:0]    id_ex_rega;
-    wire              id_ex_readmem;
-    wire              id_ex_writemem;
-    wire    [31:0]    id_ex_regb;
-    wire    [31:0]    id_ex_imedext;
-    wire              id_ex_selwsource;
-    wire    [4:0]     id_ex_regdest;
-    wire              id_ex_writereg;
-    wire              id_ex_writeov;
+	 //wires do Decode para o Issue
+    wire              id_is_selalushift;
+    wire              id_is_selimregb;
+    wire    [2:0]     id_is_aluop;
+    wire              id_is_unsig;
+    wire    [1:0]     id_is_shiftop;
+    wire    [4:0]     id_is_shiftamt;
+    wire    [31:0]    id_is_rega;
+    wire              id_is_readmem;
+    wire              id_is_writemem;
+    wire    [31:0]    id_is_regb;
+    wire    [31:0]    id_is_imedext;
+    wire              id_is_selwsource;
+    wire    [4:0]     id_is_regdest;
+    wire              id_is_writereg;
+    wire              id_is_writeov;
+	 
     wire    [4:0]     id_reg_addra;
     wire    [4:0]     id_reg_addrb;
     wire    [31:0]    reg_id_dataa;
@@ -49,35 +54,68 @@ module Mips (
     wire              wb_reg_en;
     wire    [4:0]     wb_reg_addr;
     wire    [31:0]    wb_reg_data;
+	 // wires do Issue para o Execute
+	 wire 				 is_ex_selalushift;
+    wire 				 is_ex_selimregb;
+    wire		[2:0]     is_ex_aluop;
+    wire 				 is_ex_unsig;
+    wire    [1:0]     is_ex_shiftop;
+    wire    [4:0]     is_ex_shiftamt;
+    wire    [31:0]    is_ex_rega;
+    wire					 is_ex_readmem;
+    wire 				 is_ex_writemem;
+    wire 	[31:0]    is_ex_regb;
+    wire 	[31:0]    is_ex_imedext;
+    wire 				 is_ex_selwsource;
+    wire 	[4:0]     is_ex_regdest;
+    wire 				 is_ex_writereg;
+    wire 				 is_ex_writeov;
+	 wire 	[1:0]	  	 is_ex_unidadefuncional;
+	 wire    [1:0]     numop;
+	 
 
-    Fetch FETCH(.clock(clock),.reset(reset),.if_id_nextpc(if_id_nextpc),
+    Fetch FETCH(.clock(clock),.reset(reset),.is_if_stall(is_if_stall),.if_id_nextpc(if_id_nextpc),
                 .if_id_instruc(if_id_instruc),.id_if_selpcsource(id_if_selpcsource),.id_if_rega(id_if_rega),
                 .id_if_pcimd2ext(id_if_pcimd2ext),.id_if_pcindex(id_if_pcindex),.id_if_selpctype(id_if_selpctype));
 
     Memory MEMORY(.clock(clock),.reset(reset),.ex_mem_readmem(ex_mem_readmem),.ex_mem_writemem(ex_mem_writemem),
                   .ex_mem_regb(ex_mem_regb),.ex_mem_selwsource(ex_mem_selwsource),.ex_mem_regdest(ex_mem_regdest),
                   .ex_mem_writereg(ex_mem_writereg),.ex_mem_wbvalue(ex_mem_wbvalue),.mem_wb_regdest(mem_wb_regdest),
-				  .mem_wb_writereg(mem_wb_writereg),.mem_wb_wbvalue(mem_wb_wbvalue));
+						.mem_wb_writereg(mem_wb_writereg),.mem_wb_wbvalue(mem_wb_wbvalue));
 
-    Execute EXECUTE(.clock(clock),.reset(reset),.id_ex_selalushift(id_ex_selalushift),.id_ex_selimregb(id_ex_selimregb),
-                    .id_ex_aluop(id_ex_aluop),.id_ex_unsig(id_ex_unsig),.id_ex_shiftop(id_ex_shiftop),
-                    .id_ex_shiftamt(id_ex_shiftamt),.id_ex_rega(id_ex_rega),.id_ex_readmem(id_ex_readmem),
-                    .id_ex_writemem(id_ex_writemem),.id_ex_regb(id_ex_regb),.id_ex_imedext(id_ex_imedext),
-                    .id_ex_selwsource(id_ex_selwsource),.id_ex_regdest(id_ex_regdest),.id_ex_writereg(id_ex_writereg),
-                    .id_ex_writeov(id_ex_writeov),.ex_mem_readmem(ex_mem_readmem),
+    Execute EXECUTE(.clock(clock),.reset(reset),.is_ex_selalushift(is_ex_selalushift),.is_ex_selimregb(is_ex_selimregb),
+                    .is_ex_aluop(is_ex_aluop),.is_ex_unsig(is_ex_unsig),.is_ex_shiftop(is_ex_shiftop),
+                    .is_ex_shiftamt(is_ex_shiftamt),.is_ex_rega(is_ex_rega),.is_ex_readmem(is_ex_readmem),
+                    .is_ex_writemem(is_ex_writemem),.is_ex_regb(is_ex_regb),.is_ex_imedext(is_ex_imedext),
+                    .is_ex_selwsource(is_ex_selwsource),.is_ex_regdest(is_ex_regdest),.is_ex_writereg(is_ex_writereg),
+                    .is_ex_writeov(is_ex_writeov),.ex_if_stall(ex_if_stall),.ex_mem_readmem(ex_mem_readmem),
                     .ex_mem_writemem(ex_mem_writemem),.ex_mem_regb(ex_mem_regb),.ex_mem_selwsource(ex_mem_selwsource),
-                    .ex_mem_regdest(ex_mem_regdest),.ex_mem_writereg(ex_mem_writereg),.ex_mem_wbvalue(ex_mem_wbvalue));
+                    .ex_mem_regdest(ex_mem_regdest),.ex_mem_writereg(ex_mem_writereg),.ex_mem_wbvalue(ex_mem_wbvalue),
+						  .is_ex_unidadefuncional(is_ex_unidadefuncional));
+						  
+	 Issue ISSUE(.clock(clock),.reset(reset),.id_is_selalushift(id_is_selalushift),.id_is_selimregb(id_is_selimregb),
+                    .id_is_aluop(id_is_aluop),.id_is_unsig(id_is_unsig),.id_is_shiftop(id_is_shiftop),
+                    .id_is_shiftamt(id_is_shiftamt),.id_is_rega(id_is_rega),.id_is_readmem(id_is_readmem),
+                    .id_is_writemem(id_is_writemem),.id_is_regb(id_is_regb),.id_is_imedext(id_is_imedext),
+                    .id_is_selwsource(id_is_selwsource),.id_is_regdest(id_is_regdest),.id_is_writereg(id_is_writereg),
+                    .id_is_writeov(id_is_writeov),.execute_stall(is_if_stall),.is_if_stall(is_if_stall),
+						  .is_ex_selalushift(is_ex_selalushift),.is_ex_selimregb(is_ex_selimregb),.is_ex_aluop(is_ex_aluop),
+						  .is_ex_shiftamt(is_ex_shiftamt),.is_ex_rega(is_ex_rega),.is_ex_readmem(is_ex_readmem),
+						  .is_ex_writemem(is_ex_writemem),.is_ex_regb(is_ex_regb),.is_ex_imedext(is_ex_imedext),
+						  .is_ex_selwsource(is_ex_selwsource),.is_ex_regdest(is_ex_regdest),.is_ex_writereg(is_ex_writereg),
+						  .is_ex_writeov(is_ex_writeov),.is_ex_unidadefuncional(is_ex_unidadefuncional),.is_ex_unsig(is_ex_unsig),
+						  .is_ex_shiftop(is_ex_shiftop),.id_is_numop(numop),.id_is_addra(id_reg_addra),.id_is_addrb(id_reg_addrb));
 
     Decode DECODE(.clock(clock),.reset(reset),.if_id_instruc(if_id_instruc),.if_id_nextpc(if_id_nextpc),
                   .id_if_selpcsource(id_if_selpcsource),.id_if_rega(id_if_rega),.id_if_pcimd2ext(id_if_pcimd2ext),
-                  .id_if_pcindex(id_if_pcindex),.id_if_selpctype(id_if_selpctype),.id_ex_selalushift(id_ex_selalushift),
-                  .id_ex_selimregb(id_ex_selimregb),.id_ex_aluop(id_ex_aluop),.id_ex_unsig(id_ex_unsig),
-                  .id_ex_shiftop(id_ex_shiftop),.id_ex_shiftamt(id_ex_shiftamt),.id_ex_rega(id_ex_rega),
-                  .id_ex_readmem(id_ex_readmem),.id_ex_writemem(id_ex_writemem),.id_ex_regb(id_ex_regb),
-                  .id_ex_imedext(id_ex_imedext),.id_ex_selwsource(id_ex_selwsource),.id_ex_regdest(id_ex_regdest),
-                  .id_ex_writereg(id_ex_writereg),.id_ex_writeov(id_ex_writeov),.id_reg_addra(id_reg_addra),
+                  .id_if_pcindex(id_if_pcindex),.id_if_selpctype(id_if_selpctype),.id_is_selalushift(id_is_selalushift),
+                  .id_is_selimregb(id_is_selimregb),.id_is_aluop(id_is_aluop),.id_is_unsig(id_is_unsig),
+                  .id_is_shiftop(id_is_shiftop),.id_is_shiftamt(id_is_shiftamt),.id_is_rega(id_is_rega),
+                  .id_is_readmem(id_is_readmem),.id_is_writemem(id_is_writemem),.id_is_regb(id_is_regb),
+                  .id_is_imedext(id_is_imedext),.id_is_selwsource(id_is_selwsource),.id_is_regdest(id_is_regdest),
+                  .id_is_writereg(id_is_writereg),.id_is_writeov(id_is_writeov),.id_reg_addra(id_reg_addra),
                   .id_reg_addrb(id_reg_addrb),.reg_id_dataa(reg_id_dataa),.reg_id_datab(reg_id_datab),
-                  .reg_id_ass_dataa(reg_id_ass_dataa),.reg_id_ass_datab(reg_id_ass_datab));
+                  .reg_id_ass_dataa(reg_id_ass_dataa),.reg_id_ass_datab(reg_id_ass_datab),.is_if_stall(is_if_stall),.id_is_numop(numop));
 
     Writeback WRITEBACK(.mem_wb_regdest(mem_wb_regdest),.mem_wb_writereg(mem_wb_writereg),.mem_wb_wbvalue(mem_wb_wbvalue),
                         .wb_reg_en(wb_reg_en),.wb_reg_addr(wb_reg_addr),.wb_reg_data(wb_reg_data));
