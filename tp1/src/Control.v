@@ -15,15 +15,18 @@ module Control (
     output    [1:0]    selpctype,
     output    [2:0]    compop,
     output             unsig,
-    output	  [1:0]	  numop//número de operandos
+	 output	  [1:0]	  numop, //número de operandos
+	 output    [1:0]    fununit
 );
 
     wire    [12:0]    sel;
-    reg     [22:0]    out;//out original+2 bits mais significativos denotando o número de operandos
+    reg     [24:0]    out;//out original + 2 bits mais significativos denotando o número de operandos 
+								  //             + 2 bits para identificar a unidade funcional 
 
     assign sel = {op,fn};
 
-    assign numop = out[22:21];
+	 assign fununit = out[24:23];
+	 assign numop = out[22:21];
     assign selimregb = out[20];
     assign selbrjumpz = out[19:18];
     assign selregdest = out[17];
@@ -40,33 +43,33 @@ module Control (
     assign writemem = out[0];
 
     always @(*) begin
-        casex (sel)
-            12'b000000000100: out <= 23'b100001011X10XXX1XXXXX00;
-            12'b000000000110: out <= 23'b100001011X00XXX1XXXXX00;
-            12'b000000000111: out <= 23'b100001011X01XXX1XXXXX00;
-            12'b000000001000: out <= 23'b10X01XX0XXXXXXXXXXX0100;
-            12'b000000100000: out <= 23'b1000010100XX0100XXXXX00;
-            12'b000000100001: out <= 23'b1000010111XX0100XXXXX00;
-            12'b000000100010: out <= 23'b1000010100XX1100XXXXX00;
-            12'b000000100011: out <= 23'b1000010111XX1100XXXXX00;
-            12'b000000100100: out <= 23'b100001011XXX0000XXXXX00;
-            12'b000000100101: out <= 23'b100001011XXX0010XXXXX00;
-            12'b000000100110: out <= 23'b100001011XXX1010XXXXX00;
-            12'b000000100111: out <= 23'b100001011XXX1000XXXXX00;
-            12'b000010XXXXXX: out <= 23'b00X01XX0XXXXXXXXXXX1000;
-            12'b000100XXXXXX: out <= 23'b10X10XX0X0XXXXXX0000000;
-            12'b000101XXXXXX: out <= 23'b10X10XX0X0XXXXXX1010000;
-            12'b000110XXXXXX: out <= 23'b01X10XX0X0XXXXXX0100000;
-            12'b000111XXXXXX: out <= 23'b01X10XX0X0XXXXXX0110000;
-            12'b001000XXXXXX: out <= 23'b0110000100XX0100XXXXX00;
-            12'b001001XXXXXX: out <= 23'b0110000111XX0100XXXXX00;
-            12'b001100XXXXXX: out <= 23'b011000011XXX0000XXXXX00;
-            12'b001101XXXXXX: out <= 23'b011000011XXX0010XXXXX00;
-            12'b001110XXXXXX: out <= 23'b011000011XXX1010XXXXX00;
-            12'b000000011000: out <= 23'b1000010100XX1110XXXXX00;		// nova instrução
-            12'b100011XXXXXX: out <= 23'b0110001110XX0100XXXXX10;
-            12'b101011XXXXXX: out <= 23'b01100XX0X0XX0100XXXXX01;
-            default:          out <= 23'b00000000000000000000000;
+        casex (sel) 
+            12'b000000000100: out <= 25'b01_10_0001011X10XXX1XXXXX00;// SLLV
+            12'b000000000110: out <= 25'b01_10_0001011X00XXX1XXXXX00;// SRLV
+            12'b000000000111: out <= 25'b01_10_0001011X01XXX1XXXXX00;// SRAV
+            12'b000000001000: out <= 25'b01_01_X01XX0XXXXXXXXXXX0100;// JR
+            12'b000000100000: out <= 25'b01_10_00010100XX0100XXXXX00;// ADD
+            12'b000000100001: out <= 25'b01_10_00010111XX0100XXXXX00;// ADDU
+            12'b000000100010: out <= 25'b01_10_00010100XX1100XXXXX00;// SUB
+            12'b000000100011: out <= 25'b01_10_00010111XX1100XXXXX00;// SUBU
+            12'b000000100100: out <= 25'b01_10_0001011XXX0000XXXXX00;// AND
+            12'b000000100101: out <= 25'b01_10_0001011XXX0010XXXXX00;// OR
+            12'b000000100110: out <= 25'b01_10_0001011XXX1010XXXXX00;// XOR
+            12'b000000100111: out <= 25'b01_10_0001011XXX1000XXXXX00;// NOR
+				12'b000000011000: out <= 25'b11_10_00010100XX1110XXXXX00;// MULT
+            12'b000010XXXXXX: out <= 25'b01_00_X01XX0XXXXXXXXXXX1000;// J
+            12'b000100XXXXXX: out <= 25'b01_10_X10XX0X0XXXXXX0000000;// BEQ
+            12'b000101XXXXXX: out <= 25'b01_10_X10XX0X0XXXXXX1010000;// BNE
+            12'b000110XXXXXX: out <= 25'b01_01_X10XX0X0XXXXXX0100000;// BLEZ
+            12'b000111XXXXXX: out <= 25'b01_01_X10XX0X0XXXXXX0110000;// BGTZ
+            12'b001000XXXXXX: out <= 25'b01_01_10000100XX0100XXXXX00;// ADDI
+            12'b001001XXXXXX: out <= 25'b01_01_10000111XX0100XXXXX00;// ADDIU
+            12'b001100XXXXXX: out <= 25'b01_01_1000011XXX0000XXXXX00;// ANDI
+            12'b001101XXXXXX: out <= 25'b01_01_1000011XXX0010XXXXX00;// ORI
+            12'b001110XXXXXX: out <= 25'b01_01_1000011XXX1010XXXXX00;// XORI
+            12'b100011XXXXXX: out <= 25'b10_01_10001110XX0100XXXXX10;// LW
+            12'b101011XXXXXX: out <= 25'b10_01_100XX0X0XX0100XXXXX01;// SW
+            default:          out <= 25'b01_00_000000000000000000000;// NOP
         endcase
     end
 

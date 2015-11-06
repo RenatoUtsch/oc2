@@ -12,7 +12,7 @@ module Mips (
     wire    [31:0]    if_id_nextpc;
     wire    [31:0]    if_id_instruc;
     wire              id_if_selpcsource;
-    wire    [31:0]    id_if_rega;
+    wire    [31:0]    is_if_rega;
     wire    [31:0]    id_if_pcimd2ext;
     wire    [31:0]    id_if_pcindex;
     wire    [1:0]     id_if_selpctype;
@@ -44,6 +44,8 @@ module Mips (
     wire    [4:0]     id_is_regdest;
     wire              id_is_writereg;
     wire              id_is_writeov;
+	 wire    [1:0]     id_is_numop;
+	 wire 	[1:0]		 id_is_fununit;
     wire              wb_reg_en;
     wire    [4:0]     wb_reg_addr;
     wire    [31:0]    wb_reg_data;
@@ -70,7 +72,6 @@ module Mips (
     wire 				 is_ex_writereg;
     wire 				 is_ex_writeov;
 	 wire 	[1:0]	  	 is_ex_unidadefuncional;
-	 wire    [1:0]     numop;
 	 // Wires do Demux
 	 wire 	[4:0]		 x_wb_regdest; 
 	 wire					 x_wb_writereg;
@@ -88,30 +89,31 @@ module Mips (
                 .id_if_pcimd2ext(id_if_pcimd2ext),.id_if_pcindex(id_if_pcindex),.id_if_selpctype(id_if_selpctype));	
  		
 	 Decode DECODE(.clock(clock),.reset(reset),.if_id_instruc(if_id_instruc),.if_id_nextpc(if_id_nextpc),
-                  .id_if_selpcsource(id_if_selpcsource),.id_if_rega(id_if_rega),.id_if_pcimd2ext(id_if_pcimd2ext),
+                  .id_if_selpcsource(id_if_selpcsource),.id_if_pcimd2ext(id_if_pcimd2ext),
                   .id_if_pcindex(id_if_pcindex),.id_if_selpctype(id_if_selpctype),.id_is_selalushift(id_is_selalushift),
                   .id_is_selimregb(id_is_selimregb),.id_is_aluop(id_is_aluop),.id_is_unsig(id_is_unsig),
-                  .id_is_shiftop(id_is_shiftop),.id_is_shiftamt(id_is_shiftamt),.id_is_addra(id_is_addra),
+                  .id_is_shiftop(id_is_shiftop),.id_is_addra(id_is_addra),
                   .id_is_readmem(id_is_readmem),.id_is_writemem(id_is_writemem),.id_is_addrb(id_is_addrb),
                   .id_is_imedext(id_is_imedext),.id_is_selwsource(id_is_selwsource),.id_is_regdest(id_is_regdest),
-                  .id_is_writereg(id_is_writereg),.id_is_writeov(id_is_writeov),.is_if_stall(is_if_stall),.id_is_numop(numop));
+                  .id_is_writereg(id_is_writereg),.id_is_writeov(id_is_writeov),.is_if_stall(is_if_stall),
+						.id_is_numop(id_is_numop),.id_is_fununit(id_is_fununit));
 
 	 Issue ISSUE(.clock(clock),.reset(reset),.id_is_selalushift(id_is_selalushift),.id_is_selimregb(id_is_selimregb),
-                    .id_is_aluop(id_is_aluop),.id_is_unsig(id_is_unsig),.id_is_shiftop(id_is_shiftop),
-                    .id_is_shiftamt(id_is_shiftamt),.id_is_readmem(id_is_readmem),.id_is_writemem(id_is_writemem),.id_is_imedext(id_is_imedext),
-                    .id_is_selwsource(id_is_selwsource),.id_is_regdest(id_is_regdest),.id_is_writereg(id_is_writereg),
-                    .id_is_writeov(id_is_writeov),.execute_stall(is_if_stall),.is_if_stall(is_if_stall),
-						  .is_ex_selalushift(is_ex_selalushift),.is_ex_selimregb(is_ex_selimregb),.is_ex_aluop(is_ex_aluop),
-						  .is_ex_shiftamt(is_ex_shiftamt),.is_ex_rega(is_ex_rega),.is_ex_readmem(is_ex_readmem),
-						  .is_ex_writemem(is_ex_writemem),.is_ex_regb(is_ex_regb),.is_ex_imedext(is_ex_imedext),
-						  .is_ex_selwsource(is_ex_selwsource),.is_ex_regdest(is_ex_regdest),.is_ex_writereg(is_ex_writereg),
-						  .is_ex_writeov(is_ex_writeov),.is_ex_unidadefuncional(is_ex_unidadefuncional),.is_ex_unsig(is_ex_unsig),
-						  .is_ex_shiftop(is_ex_shiftop),.id_is_numop(numop),.id_is_addra(id_is_addra),.id_is_addrb(id_is_addrb),
-						  .is_reg_addra(is_reg_addra),.is_reg_addrb(is_reg_addrb),.reg_is_dataa(reg_is_dataa),
-						  .reg_is_datab(reg_is_datab),.reg_is_ass_dataa(reg_is_ass_dataa),.reg_is_ass_datab(reg_is_ass_datab));
+                .id_is_aluop(id_is_aluop),.id_is_unsig(id_is_unsig),.id_is_shiftop(id_is_shiftop),.is_if_rega(is_if_rega),
+                .id_is_shiftamt(id_is_shiftamt),.id_is_readmem(id_is_readmem),.id_is_writemem(id_is_writemem),.id_is_imedext(id_is_imedext),
+                .id_is_selwsource(id_is_selwsource),.id_is_regdest(id_is_regdest),.id_is_writereg(id_is_writereg),
+                .id_is_writeov(id_is_writeov),.is_if_stall(is_if_stall),.is_ex_selalushift(is_ex_selalushift),
+					 .is_ex_selimregb(is_ex_selimregb),.is_ex_aluop(is_ex_aluop),
+					 .is_ex_shiftamt(is_ex_shiftamt),.is_ex_rega(is_ex_rega),.is_ex_readmem(is_ex_readmem),
+					 .is_ex_writemem(is_ex_writemem),.is_ex_regb(is_ex_regb),.is_ex_imedext(is_ex_imedext),
+					 .is_ex_selwsource(is_ex_selwsource),.is_ex_regdest(is_ex_regdest),.is_ex_writereg(is_ex_writereg),
+					 .is_ex_writeov(is_ex_writeov),.is_ex_unidadefuncional(is_ex_unidadefuncional),.is_ex_unsig(is_ex_unsig),
+					 .is_ex_shiftop(is_ex_shiftop),.id_is_numop(id_is_numop),.id_is_addra(id_is_addra),.id_is_addrb(id_is_addrb),
+					 .is_reg_addra(is_reg_addra),.is_reg_addrb(is_reg_addrb),.reg_is_dataa(reg_is_dataa),.id_is_fununit(id_is_fununit),
+					 .reg_is_datab(reg_is_datab),.reg_is_ass_dataa(reg_is_ass_dataa),.reg_is_ass_datab(reg_is_ass_datab));
 						  
 						  
-	 	 Execute_X EXECUTE_X(.clock(clock),.reset(reset),.is_x_functionalunit(is_ex_unidadefuncional),
+	 Execute_X EXECUTE_X(.clock(clock),.reset(reset),.is_x_functionalunit(is_ex_unidadefuncional),
 								.is_x_selalushift(is_ex_selalushift),.is_x_selimregb(is_ex_selimregb),.is_x_aluop(is_ex_aluop),
 								.is_x_unsig(is_ex_unsig),.is_x_shiftop(is_ex_shiftop),.is_x_shiftamt(is_ex_shiftamt),
 								.is_x_rega(is_ex_rega),.is_x_regb(is_ex_regb),.is_x_imedext(is_ex_imedext),.is_x_regdest(is_ex_regdest),
@@ -128,9 +130,9 @@ module Mips (
 								.is_m0_regdest(is_ex_regdest),.is_m0_writereg(is_ex_writereg),.m_wb_regdest(m_wb_regdest),
 								.m_wb_writereg(m_wb_writereg),.m_wb_wbvalue(m_wb_wbvalue));
 								
-	Demux DEMUX(.x_wb_regdest(x_wb_regdest),.x_wb_writereg(x_wb_writereg),.x_wb_wbvalue(x_wb_wbvalue),
-					.y_wb_regdest(y_wb_regdest),.y_wb_writereg(y_wb_writereg),.y_wb_wbvalue(y_wb_wbvalue),
-					.m_wb_regdest(m_wb_regdest),.m_wb_writereg(m_wb_writereg),.m_wb_wbvalue(m_wb_wbvalue),.ex_wb_regdest(ex_wb_regdest),.ex_wb_writereg(ex_wb_writereg),.ex_wb_wbvalue(ex_wb_wbvalue));
+	 Demux DEMUX(.x_wb_regdest(x_wb_regdest),.x_wb_writereg(x_wb_writereg),.x_wb_wbvalue(x_wb_wbvalue),
+					 .y_wb_regdest(y_wb_regdest),.y_wb_writereg(y_wb_writereg),.y_wb_wbvalue(y_wb_wbvalue),
+					 .m_wb_regdest(m_wb_regdest),.m_wb_writereg(m_wb_writereg),.m_wb_wbvalue(m_wb_wbvalue),.ex_wb_regdest(ex_wb_regdest),.ex_wb_writereg(ex_wb_writereg),.ex_wb_wbvalue(ex_wb_wbvalue));
 						
     Writeback WRITEBACK(.mem_wb_regdest(ex_wb_regdest),.mem_wb_writereg(ex_wb_writereg),.mem_wb_wbvalue(ex_wb_wbvalue),
                         .wb_reg_en(wb_reg_en),.wb_reg_addr(wb_reg_addr),.wb_reg_data(wb_reg_data));
