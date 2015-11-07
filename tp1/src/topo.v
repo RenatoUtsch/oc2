@@ -1,32 +1,34 @@
 module topo (
-	 input[17:0]	  SW, // Switches
-    input [3:0]    KEY,
+    input  [3:0]   KEY,
+	 input 	  CLOCK_50,
 	 output [0:6]  HEX0,
     output [0:6]  HEX1,
 	 output [0:6]  HEX2,
 	 output [0:6]  HEX3,
 	 output [0:6]  HEX4,
-	 output [0:6]  HEX5,
-	 output [0:6]  HEX6,
-	 output [0:6]  HEX7
+	 output [7:0]  LEDG
 );
 
-	 wire		[31:0] regout;
-	 reg [31:0] saida;   
+	 wire		[31:0] regout$0;// Valor contido no registrador 0.
+	 wire		[31:0] regout$1;// Valor contido no registrador 1.
+	 wire		[31:0] regout$2;// Valor contido no registrador 2.
+	 wire		[31:0] regout$3;// Valor contido no registrador 3.
+	 wire		[31:0] regout$4;// Valor contido no registrador 4.
+	 reg		[31:0]      clk;// Novo sinal de clock. 
 	 
-	 displayDecoder DP7_0(.entrada(saida[3:0]),.saida(HEX0));
-	 displayDecoder DP7_1(.entrada(saida[7:4]),.saida(HEX1));
-	 displayDecoder DP7_2(.entrada(saida[11:8]),.saida(HEX2));
-	 displayDecoder DP7_3(.entrada(saida[15:12]),.saida(HEX3));
-	 displayDecoder DP7_4(.entrada(saida[19:16]),.saida(HEX4));
-	 displayDecoder DP7_5(.entrada(saida[23:20]),.saida(HEX5));
-	 displayDecoder DP7_6(.entrada(saida[27:24]),.saida(HEX6));
-	 displayDecoder DP7_7(.entrada(saida[31:28]),.saida(HEX7));
-	 
-	 always@(negedge KEY[1])begin
-		saida = regout;
-	 end
+	 assign LEDG[0] = clk[24];
 	
-    Mips MIPS(.clock(KEY[3]),.reset(KEY[2]),.regout(regout),.addrout(SW[4:0]));
+	 displayDecoder DP7_0(.entrada(regout$0),.saida(HEX0));
+	 displayDecoder DP7_1(.entrada(regout$1),.saida(HEX1));
+	 displayDecoder DP7_2(.entrada(regout$2),.saida(HEX2));
+	 displayDecoder DP7_3(.entrada(regout$3),.saida(HEX3));
+	 displayDecoder DP7_4(.entrada(regout$4),.saida(HEX4));
+	 
+    Mips MIPS(.clock(clk[24]),.reset(KEY[2]),.regout$0(regout$0),.regout$1(regout$1),
+				  .regout$2(regout$2),.regout$3(regout$3),.regout$4(regout$4));
 
+	 always @(posedge CLOCK_50)begin
+		clk <= clk + 1;
+	 end
+	 
 endmodule

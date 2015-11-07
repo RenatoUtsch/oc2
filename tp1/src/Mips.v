@@ -1,11 +1,11 @@
 module Mips (
     input clock,
     input reset,
-    output [31:0] regout,
-	 output [31:0] regout2,
-	 output [31:0] regout3,
-	 output [31:0] regout4,
-    input  [4:0]  addrout
+    output [31:0] regout$0,
+	 output [31:0] regout$1,
+	 output [31:0] regout$2,
+	 output [31:0] regout$3,
+	 output [31:0]	regout$4
 );
 	
     wire              is_if_stall;
@@ -132,14 +132,16 @@ module Mips (
 								
 	 Demux DEMUX(.x_wb_regdest(x_wb_regdest),.x_wb_writereg(x_wb_writereg),.x_wb_wbvalue(x_wb_wbvalue),
 					 .y_wb_regdest(y_wb_regdest),.y_wb_writereg(y_wb_writereg),.y_wb_wbvalue(y_wb_wbvalue),
-					 .m_wb_regdest(m_wb_regdest),.m_wb_writereg(m_wb_writereg),.m_wb_wbvalue(m_wb_wbvalue),.ex_wb_regdest(ex_wb_regdest),.ex_wb_writereg(ex_wb_writereg),.ex_wb_wbvalue(ex_wb_wbvalue));
+					 .m_wb_regdest(m_wb_regdest),.m_wb_writereg(m_wb_writereg),.m_wb_wbvalue(m_wb_wbvalue),
+					 .ex_wb_regdest(ex_wb_regdest),.ex_wb_writereg(ex_wb_writereg),.ex_wb_wbvalue(ex_wb_wbvalue));
 						
     Writeback WRITEBACK(.mem_wb_regdest(ex_wb_regdest),.mem_wb_writereg(ex_wb_writereg),.mem_wb_wbvalue(ex_wb_wbvalue),
                         .wb_reg_en(wb_reg_en),.wb_reg_addr(wb_reg_addr),.wb_reg_data(wb_reg_data));
 
-    Registers REGISTERS(.clock(clock),.reset(reset),.addra(is_reg_addra),.dataa(reg_is_dataa),
-                        .ass_dataa(reg_is_ass_dataa),.addrb(is_reg_addrb),.datab(reg_is_datab),
-                        .ass_datab(reg_is_ass_datab),.enc(wb_reg_en),.addrc(wb_reg_addr),.datac(wb_reg_data),
-								.regout(regout),.addrout(addrout));
+    Registers ARCHITECTURE_REGISTER_FILE(.clock(clock),.reset(reset),.addra(is_reg_addra),.dataa(reg_is_dataa),
+													  .ass_dataa(reg_is_ass_dataa),.addrb(is_reg_addrb),.datab(reg_is_datab),
+													  .ass_datab(reg_is_ass_datab),.enc(wb_reg_en),.addrc(wb_reg_addr),.datac(wb_reg_data),
+													  .regout$0(regout$0),.regout$1(regout$1),.regout$2(regout$2),
+													  .regout$3(regout$3),.regout$4(regout$4));
 												
 endmodule

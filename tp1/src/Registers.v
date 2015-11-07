@@ -10,8 +10,11 @@ module Registers (
     input                   enc,
     input         [4:0]     addrc,
     input         [31:0]    datac,
-	 input         [4:0]   addrout,
-	 output        [31:0]   regout
+	 output        [31:0]   regout$0,
+	 output			[31:0]	regout$1,
+	 output			[31:0]	regout$2,
+	 output			[31:0]	regout$3,
+	 output			[31:0]	regout$4
 );
 
    reg [31:0] registers [31:0];
@@ -25,7 +28,11 @@ module Registers (
 					 registers[7],registers[6],registers[5],registers[4],
 					 registers[3],registers[2],registers[1],registers[0]};*/
 	 
-	 assign regout = registers[addrout];
+	 assign regout$0 = registers[0];
+	 assign regout$1 = registers[1];
+	 assign regout$2 = registers[2];
+	 assign regout$3 = registers[3];
+	 assign regout$4 = registers[4];
     assign ass_dataa = registers[addra];
     assign ass_datab = registers[addrb];
 
