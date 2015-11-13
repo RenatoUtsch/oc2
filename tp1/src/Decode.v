@@ -5,12 +5,10 @@ module Decode (
 	 input 						 is_if_stall,
     //Fetch
     input         [31:0]    if_id_instruc,
-    input         [31:0]    if_id_nextpc,
-    output reg              id_if_selpcsource,
-    output        [31:0]    id_if_pcimd2ext,
-    output        [31:0]    id_if_pcindex,
-    output        [1:0]     id_if_selpctype,
+	 input			[31:0]	 if_id_nextpc,
     //Issue
+	 output reg		[31:0]	 id_is_instruc,
+	 output reg		[31:0]	 id_is_nextpc,
     output reg              id_is_selalushift,
     output reg              id_is_selimregb,
     output reg    [2:0]     id_is_aluop,
@@ -23,22 +21,16 @@ module Decode (
     output reg    [4:0]     id_is_regdest,
     output reg              id_is_writereg,
     output reg              id_is_writeov,
-	 output reg       [1:0]  id_is_numop,
-	 output reg			[1:0]  id_is_fununit,
-	 output reg		   [31:0] id_is_addra,
-	 output reg		   [31:0] id_is_addrb,
-    //Registers
-    output        [4:0]     id_reg_addra,
-    output        [4:0]     id_reg_addrb,
-    input         [31:0]    reg_id_dataa,
-    input         [31:0]    reg_id_datab,
-    input         [31:0]    reg_id_ass_dataa,
-    input         [31:0]    reg_id_ass_datab
+	 output reg    [1:0]		 id_is_numop,
+	 output reg		[1:0]  	 id_is_fununit,
+	 output reg		[31:0] 	 id_is_addra,
+	 output reg		[31:0] 	 id_is_addrb,
+	 output reg    [1:0]  	 id_is_selpctype,
+	 output reg 	[1:0]  	 id_is_selbrjumpz,
+	 output reg		[2:0]		 id_is_compop
 );
 
-    wire    [1:0]    selbrjumpz;
-    wire             compout;
-    wire    [1:0]    selpctype;
+    
     wire             selalushift;
     wire             selimregb;
     wire    [2:0]    aluop;
@@ -50,31 +42,19 @@ module Decode (
     wire             selregdest;
     wire             writereg;
     wire             writeov;
-    wire    [2:0]    compop;
 	 wire    [1:0]    numop;
 	 wire 	[1:0] 	fununit;
+	 wire 	[2:0]		compop;
 
-    assign id_if_selpctype = selpctype;
-    assign id_if_pcindex = {if_id_nextpc[31:28],if_id_instruc[25:0]};
-    assign id_if_pcimd2ext = if_id_nextpc + $signed({{16{if_id_instruc[15]}},if_id_instruc[15:0]});
-
-    Comparator COMPARATOR(.a(reg_id_ass_dataa),.b(reg_id_ass_datab),.op(compop),.compout(compout));
+	 wire 	[1:0]    selpctype;
+	 wire 	[1:0]		selbrjumpz;
+	 
     Control CONTROL(.op(if_id_instruc[31:26]),.fn(if_id_instruc[5:0]),
                     .selwsource(selwsource),.selregdest(selregdest),.writereg(writereg),
                     .writeov(writeov),.selimregb(selimregb),.selalushift(selalushift),
                     .aluop(aluop),.shiftop(shiftop),.readmem(readmem),.writemem(writemem),
                     .selbrjumpz(selbrjumpz),.selpctype(selpctype),.compop(compop),
                     .unsig(unsig),.numop(numop),.fununit(fununit));
-
-    always @(*) begin
-        case (selbrjumpz)
-            2'b00:   id_if_selpcsource <= 1'b0;
-            2'b01:   id_if_selpcsource <= 1'b1;
-            2'b10:   id_if_selpcsource <= compout;
-            2'b11:   id_if_selpcsource <= 1'b0;
-            default: id_if_selpcsource <= 1'b0;
-        endcase
-    end
 
     always @(posedge clock or negedge reset) begin
 			   if (~reset) begin
@@ -94,7 +74,12 @@ module Decode (
 					id_is_fununit <= 2'b00;
 					id_is_addra <= 32'h0000_0000;
 					id_is_addrb <= 32'h0000_0000;
-            end else if( !is_if_stall ) begin
+					id_is_instruc <= 32'h0000_0000;
+					id_is_nextpc <= 32'h0000_0000;
+					id_is_compop <= 3'b000;
+				   id_is_selpctype <= 2'b00;
+				   id_is_selbrjumpz <= 2'b00;
+            end else if(!is_if_stall) begin
                id_is_selalushift <= selalushift;
                id_is_selimregb <= selimregb;
                id_is_aluop <= aluop;
@@ -111,7 +96,12 @@ module Decode (
 					id_is_addrb <= if_id_instruc[20:16];
 					id_is_numop <= numop;
 					id_is_fununit <= fununit;
-            end
+					id_is_instruc <= if_id_instruc;
+					id_is_nextpc <= if_id_nextpc;
+					id_is_compop <= compop;
+					id_is_selpctype <= selpctype;
+					id_is_selbrjumpz <= selbrjumpz;
+            end		
 	 end 
 
 endmodule

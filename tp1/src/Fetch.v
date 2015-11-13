@@ -48,12 +48,12 @@ module Fetch (
                         2'b01: if_id_nextpc <= id_if_rega;
                         2'b10: if_id_nextpc <= id_if_pcindex;
                         2'b11: if_id_nextpc <= 32'h0000_0040;
-						default: if_id_nextpc <= 32'hXXXX_XXXX;
+							   default: if_id_nextpc <= 32'hXXXX_XXXX;
                         //default: pc <= 32'hXXXX_XXXX;
                     endcase
                 end else begin
 						  pc <= pc + 32'h0000_0001;
-						  if_id_nextpc = pc + 1;
+						  if_id_nextpc <= pc + 1;
                 end
             end
         end

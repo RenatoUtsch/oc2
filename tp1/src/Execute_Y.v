@@ -150,8 +150,12 @@ module Execute_Y1 (
         end else begin
             if($signed(y0_y1_rega) < 32'sh0000_0000)
                 y1_y2_rega <= ~y0_y1_rega + 1; // Two's complement.
+				else
+					 y1_y2_rega <= y0_y1_rega;
             if($signed(y0_y1_regb) < 32'sh0000_0000)
                 y1_y2_regb <= ~y0_y1_regb + 1; // Two's complement.
+			   else
+				    y1_y2_regb <= y0_y1_regb;
 
             y1_y2_stall <= y0_y1_stall;
             y1_y2_positive <= y0_y1_positive;

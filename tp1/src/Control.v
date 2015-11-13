@@ -68,7 +68,7 @@ module Control (
             12'b001101XXXXXX: out <= 25'b01_01_1000011XXX0010XXXXX00;// ORI
             12'b001110XXXXXX: out <= 25'b01_01_1000011XXX1010XXXXX00;// XORI
             12'b100011XXXXXX: out <= 25'b10_01_10001110XX0100XXXXX10;// LW
-            12'b101011XXXXXX: out <= 25'b10_01_100XX0X0XX0100XXXXX01;// SW
+            12'b101011XXXXXX: out <= 25'b10_10_100XX0X0XX0100XXXXX01;// SW
             default:          out <= 25'b01_00_000000000000000000000;// NOP
         endcase
     end
